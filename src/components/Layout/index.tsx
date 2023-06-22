@@ -15,7 +15,7 @@ const MyLayout: React.FC = () => {
 		<div>
 			<Layout
 				style={{
-					height: 'calc(100vh + 200px)',
+					height: 'calc(100vh)',
 					overflow: 'hidden',
 					position: 'relative'
 				}}
@@ -33,16 +33,14 @@ const MyLayout: React.FC = () => {
 				</Header>
 				<Content
 					style={{
-						minHeight: 'calc(100vh - 65px)',
+						height: 'calc(100vh - 65px)',
 						marginTop: '65px',
-						padding: '0 40px'
+						overflowY: 'scroll'
 					}}
 				>
-					<div>{element}</div>
-				</Content>
-				<Footer>
+					<div style={{ padding: '0 40px' }}>{element}</div>
 					<MyFooter />
-				</Footer>
+				</Content>
 			</Layout>
 		</div>
 	);

@@ -145,21 +145,21 @@ export const MOVIE_LIST: MovieType[] = [
 
 // 热门电影
 export const getHotMoviesApi = () => {
-	return new Promise((resolve) => {
+	return new Promise<MovieType[]>((resolve) => {
 		resolve(MOVIE_LIST);
 	});
 };
 
 // 猜你喜欢
 export const getLikeMoviesApi = () => {
-	return new Promise((resolve) => {
+	return new Promise<MovieType[]>((resolve) => {
 		resolve(MOVIE_LIST);
 	});
 };
 
 // 最近浏览
 export const getRecentMoviesApi = () => {
-	return new Promise((resolve) => {
+	return new Promise<MovieType[]>((resolve) => {
 		resolve(MOVIE_LIST);
 	});
 };

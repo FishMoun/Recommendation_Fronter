@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Image, Modal, Rate } from '@arco-design/web-react';
 import styles from './index.module.scss';
+import { MovieType } from '../../service/api';
 
 interface MovieProps {
 	width: number;
@@ -43,7 +44,9 @@ const MovieBody: React.FC<MovieProps> = ({ width, height }) => {
 	);
 };
 
-const MovieFooter: React.FC = () => {
+const MovieFooter: React.FC<Pick<MovieType, 'introduction'>> = ({
+	introduction
+}) => {
 	return (
 		<div className={styles.Desc} style={{ color: 'grey' }}>
 			descbalabaladescbalabaladescbalabala descbalabala descbalabala
@@ -52,14 +55,20 @@ const MovieFooter: React.FC = () => {
 	);
 };
 
-const MovieCard: React.FC = () => {
+const MovieCard: React.FC<MovieType> = ({
+	posterUrl,
+	name,
+	publishedYear,
+	introduction,
+	avgRate
+}) => {
 	const [visible, setVisible] = useState(false);
 
 	return (
 		<>
 			{visible && (
 				<Modal
-					title="小王子"
+					title={name}
 					visible={true}
 					onCancel={() => {
 						setVisible(false);
@@ -87,7 +96,7 @@ const MovieCard: React.FC = () => {
 						</div>
 
 						<div style={{ flex: '1', padding: '0 10px' }}>
-							<MovieFooter />
+							<MovieFooter introduction={introduction} />
 						</div>
 					</div>
 				</Modal>
@@ -99,7 +108,7 @@ const MovieCard: React.FC = () => {
 				}}
 			>
 				<MovieBody width={210} height={280} />
-				<MovieFooter />
+				<MovieFooter introduction={introduction} />
 			</div>
 		</>
 	);
