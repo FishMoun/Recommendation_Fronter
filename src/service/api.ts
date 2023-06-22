@@ -134,9 +134,9 @@ export interface MovieType {
 export const MOVIE_LIST: MovieType[] = [
 	{
 		movieId: 0,
-		name: '小猪佩奇',
-		posterUrl: '#',
-		type: UserLikes.Comedy,
+		name: '小王子',
+		posterUrl: 'https://pic.616pic.com/bg_w1180/00/01/95/eDWwD17BPr.jpg',
+		type: UserLikes.ScienceFiction,
 		publishedYear: '1998',
 		introduction: 'xx',
 		avgRate: 5
