@@ -62,5 +62,6 @@
 		"prettier": "^2.8.8",
 		"sass": "^1.62.1",
 		"typescript-eslint-parser": "^22.0.0"
-	}
+	},
+	"proxy": "http://47.100.121.5:7529"
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import Title from '../../components/Title';
-import styles from './index.module.scss';
+// import styles from './index.module.scss';
 
 const Recent: React.FC = () => {
 	return (

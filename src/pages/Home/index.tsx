@@ -1,7 +1,7 @@
 import React from 'react';
 import Title from '../../components/Title';
 import MovieCard from '../../components/MovieCard';
-import styles from './index.module.scss';
+// import styles from './index.module.scss';
 
 const Home: React.FC = () => {
 	return (

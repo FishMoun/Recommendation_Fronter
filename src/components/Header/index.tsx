@@ -3,132 +3,42 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import {
 	Avatar,
 	Modal,
-	Alert,
+	// Alert,
 	Form,
 	Input,
 	Radio,
-	Select
+	Select,
+	Message
 } from '@arco-design/web-react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { loginApi, LoginParams } from '../../service/api';
-import { JOBLIST } from '../../assets/const';
+import { loginAction } from '../../store/features/userSlice';
+import {
+	loginApi,
+	LoginParams,
+	RegisterParams,
+	JOB_LIST,
+	LIKE_LIST,
+	UserSex,
+	registerApi
+} from '../../service/api';
 import styles from './index.module.scss';
 
-const Header: React.FC = () => {
-	const [visible, setVisible] = useState(false);
-	const [visible1, setVisible1] = useState(false);
-	const [form] = Form.useForm<LoginParams>();
-	const [form1] = Form.useForm<LoginParams>();
-	const FormItem = Form.Item;
-	const { isLogin } = useAppSelector((store) => store.userInfo);
-	const dispatch = useAppDispatch();
-	const navigate = useNavigate();
+interface RegisterFormParams extends RegisterParams {
+	password1: string;
+}
 
-	const genModal = () => {
-		return (
-			<>
-				<Modal
-					title="欢迎登陆"
-					visible={visible}
-					onCancel={() => {
-						setVisible(false);
-					}}
-					onOk={() => {
-						loginApi(form.getFieldsValue() as LoginParams);
-					}}
-				>
-					<Form form={form}>
-						<FormItem
-							label="用户名"
-							field={'name'}
-							rules={[{ required: true, message: '用户名必填' }]}
-						>
-							<Input placeholder="请输入您的账号" />
-						</FormItem>
-						<FormItem
-							label="密码"
-							field={'password'}
-							rules={[{ required: true, message: '密码必填' }]}
-						>
-							<Input.Password placeholder="请输入您的密码" />
-						</FormItem>
-					</Form>
-				</Modal>
-				<Modal
-					title="欢迎注册"
-					visible={visible1}
-					onCancel={() => {
-						setVisible1(false);
-					}}
-					onOk={() => {
-						form1.validate((err) => {
-							console.log(form1.getFieldsError());
-						});
-					}}
-				>
-					<Form form={form1}>
-						<FormItem
-							label="用户名"
-							field={'name'}
-							rules={[{ required: true, message: '用户名必填' }]}
-						>
-							<Input placeholder="请输入您的账号" />
-						</FormItem>
-						<FormItem
-							label="密码"
-							field={'password'}
-							rules={[{ required: true, message: '密码必填' }]}
-						>
-							<Input.Password placeholder="请输入您的密码" />
-						</FormItem>
-						<FormItem
-							label="确认密码"
-							field={'password1'}
-							rules={[{ required: true, message: '确认密码必填' }]}
-						>
-							<Input.Password placeholder="请再次确认密码" />
-						</FormItem>
-						<FormItem
-							label="年龄"
-							field={'age'}
-							rules={[{ required: true, message: '年龄必填' }]}
-						>
-							<Input.Password placeholder="请输入您的年龄" />
-						</FormItem>
-						<FormItem
-							label="性别"
-							field={'sex'}
-							rules={[{ required: true, message: '性别必填' }]}
-						>
-							<Radio.Group options={['男', '女']}></Radio.Group>
-						</FormItem>
-						<FormItem
-							label="职业"
-							field={'job'}
-							rules={[{ required: true, message: '职业必填' }]}
-						>
-							<Select placeholder="请选择您的职业">
-								{JOBLIST.map((jobItem: string) => (
-									<Select.Option key={jobItem} value={jobItem}>
-										{jobItem}
-									</Select.Option>
-								))}
-							</Select>
-						</FormItem>
-					</Form>
-				</Modal>
-			</>
-		);
-	};
-	const handleLogin = () => {
-		setVisible(true);
-	};
-	const handleRgt = () => {
-		setVisible1(true);
-	};
+const Header: React.FC = () => {
+	const [loginVisible, setLoginVisible] = useState(false);
+	const [registerVisible, setRegisterVisible] = useState(false);
+	const navigate = useNavigate();
+	const [form] = Form.useForm<LoginParams>();
+	const [form1] = Form.useForm<RegisterFormParams>();
+	const FormItem = Form.Item;
+	const { isLogin, userInfo } = useAppSelector((store) => store.userInfo);
+	const dispatch = useAppDispatch();
+
 	return (
 		<div>
-			{genModal()}
 			<div className={styles.Header}>
 				<div className="left flexCenter">
 					<img
@@ -171,25 +81,187 @@ const Header: React.FC = () => {
 							isActive ? 'navActive ' + styles.User : styles.User
 						}
 					>
-						游客
+						{isLogin ? userInfo.userName : '游客'}
 					</NavLink>
 
-					<span
-						className={styles.Login}
-						style={{ marginLeft: '10px', fontSize: '12px' }}
-						onClick={handleLogin}
-					>
-						登陆
-					</span>
-					<span
-						className={styles.Login}
-						style={{ marginLeft: '10px', fontSize: '12px' }}
-						onClick={handleRgt}
-					>
-						注册
-					</span>
+					{!isLogin && (
+						<>
+							<span
+								className={styles.Login}
+								style={{ marginLeft: '10px', fontSize: '12px' }}
+								onClick={() => {
+									setLoginVisible(true);
+								}}
+							>
+								登陆
+							</span>
+							<span
+								className={styles.Login}
+								style={{ marginLeft: '10px', fontSize: '12px' }}
+								onClick={() => {
+									setRegisterVisible(true);
+								}}
+							>
+								注册
+							</span>
+						</>
+					)}
 				</div>
 			</div>
+			{loginVisible && (
+				<Modal
+					title="欢迎登陆"
+					visible={true}
+					onCancel={() => {
+						setLoginVisible(false);
+					}}
+					onOk={() => {
+						form.validate().then(
+							() => {
+								loginApi(form.getFieldsValue() as LoginParams).then(
+									(res) => {
+										Message.success('登陆成功！');
+										form.clearFields();
+										setLoginVisible(false);
+										dispatch(loginAction(res as Partial<RegisterFormParams>));
+										console.log(res);
+									},
+									(err) => {
+										Message.error(err);
+									}
+								);
+							},
+							(err) => {
+								Message.error(err);
+							}
+						);
+					}}
+				>
+					<Form form={form}>
+						<FormItem
+							label="用户名"
+							field={'userName'}
+							rules={[{ required: true, message: '用户名必填' }]}
+						>
+							<Input placeholder="请输入您的账号" />
+						</FormItem>
+						<FormItem
+							label="密码"
+							field={'password'}
+							rules={[{ required: true, message: '密码必填' }]}
+						>
+							<Input.Password placeholder="请输入您的密码" />
+						</FormItem>
+					</Form>
+				</Modal>
+			)}
+			{registerVisible && (
+				<Modal
+					title="欢迎注册"
+					visible={true}
+					onCancel={() => {
+						setRegisterVisible(false);
+					}}
+					onOk={() => {
+						form1.validate().then(
+							() => {
+								if (
+									form1.getFieldValue('password') !==
+									form1.getFieldValue('password1')
+								) {
+									Message.error('密码不一致！');
+									return;
+								}
+								const params = form1.getFieldsValue();
+								delete params.password1;
+								params.age = Number(params.age);
+								registerApi(params as RegisterParams).then(
+									(res) => {
+										Message.success('注册成功，请登陆！');
+										form1.clearFields();
+										setRegisterVisible(false);
+										setLoginVisible(true);
+										console.log(res);
+									},
+									(err) => {
+										console.log(err);
+										Message.error(err);
+									}
+								);
+							},
+							() => {
+								Message.error('表单校验失败！');
+							}
+						);
+					}}
+				>
+					<Form form={form1}>
+						<FormItem
+							label="用户名"
+							field={'userName'}
+							rules={[{ required: true, message: '用户名必填' }]}
+						>
+							<Input placeholder="请输入您的账号" />
+						</FormItem>
+						<FormItem
+							label="密码"
+							field={'password'}
+							rules={[{ required: true, message: '密码必填' }]}
+						>
+							<Input.Password placeholder="请输入您的密码" />
+						</FormItem>
+						<FormItem
+							label="确认密码"
+							field={'password1'}
+							rules={[{ required: true, message: '确认密码必填' }]}
+						>
+							<Input.Password placeholder="请再次确认密码" />
+						</FormItem>
+						<FormItem
+							label="年龄"
+							field={'age'}
+							rules={[{ required: true, type: 'number', min: 0, max: 99 }]}
+						>
+							<Input placeholder="请输入您的年龄" />
+						</FormItem>
+						<FormItem
+							label="性别"
+							field={'gender'}
+							rules={[{ required: true, message: '性别必填' }]}
+						>
+							<Radio.Group
+								options={[UserSex.Male, UserSex.Female, UserSex.Unkown]}
+							></Radio.Group>
+						</FormItem>
+						<FormItem
+							label="职业"
+							field={'occupation'}
+							rules={[{ required: true, message: '职业必填' }]}
+						>
+							<Select placeholder="请选择您的职业" mode="multiple">
+								{JOB_LIST.map((jobItem: string) => (
+									<Select.Option key={jobItem} value={jobItem}>
+										{jobItem}
+									</Select.Option>
+								))}
+							</Select>
+						</FormItem>
+						<FormItem
+							label="兴趣类型"
+							field={'likes'}
+							rules={[{ required: true, message: '职业必填' }]}
+						>
+							<Select placeholder="请选择您的职业" mode="multiple">
+								{LIKE_LIST.map((jobItem: string) => (
+									<Select.Option key={jobItem} value={jobItem}>
+										{jobItem}
+									</Select.Option>
+								))}
+							</Select>
+						</FormItem>
+					</Form>
+				</Modal>
+			)}
 		</div>
 	);
 };

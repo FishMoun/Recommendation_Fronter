@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Image, Modal, Rate } from '@arco-design/web-react';
 import styles from './index.module.scss';
 
@@ -64,7 +64,7 @@ const MovieCard: React.FC = () => {
 			{genModal()}
 			<div
 				className={styles.MovieItem}
-				onClick={(e) => {
+				onClick={() => {
 					setVisible(true);
 				}}
 			>

@@ -4,7 +4,7 @@ import MyFooter from '../Footer';
 import { Layout } from '@arco-design/web-react';
 import { useRoutes } from 'react-router-dom';
 import routes from '../../routes';
-import styles from './index.module.scss';
+// import styles from './index.module.scss';
 
 const Header = Layout.Header;
 const Footer = Layout.Footer;
