@@ -4,19 +4,19 @@ import styles from './index.module.scss';
 import { MovieType } from '../../service/api';
 
 interface MovieProps {
+	movieInfo: Pick<
+		MovieType,
+		'posterUrl' | 'name' | 'publishedYear' | 'avgRate'
+	>;
 	width: number;
 	height: number;
 }
 
-const MovieBody: React.FC<MovieProps> = ({ width, height }) => {
+const MovieBody: React.FC<MovieProps> = ({ width, height, movieInfo }) => {
+	const { posterUrl, name, publishedYear, avgRate } = movieInfo;
 	return (
 		<>
-			<Image
-				preview={false}
-				width={width}
-				height={height}
-				src="https://pic.616pic.com/bg_w1180/00/01/95/eDWwD17BPr.jpg"
-			/>
+			<Image preview={false} width={width} height={height} src={posterUrl} />
 			<div
 				style={{
 					display: 'flex',
@@ -32,9 +32,9 @@ const MovieBody: React.FC<MovieProps> = ({ width, height }) => {
 							lineHeight: '35px'
 						}}
 					>
-						小王子
+						{name}
 					</div>
-					<div>2023-10-11</div>
+					<div>{publishedYear}</div>
 				</div>
 				<div
 					className="right"
@@ -44,7 +44,7 @@ const MovieBody: React.FC<MovieProps> = ({ width, height }) => {
 						lineHeight: '35px'
 					}}
 				>
-					9.1分
+					{avgRate.toFixed(1)}分
 				</div>
 			</div>
 		</>
@@ -98,7 +98,11 @@ const MovieCard: React.FC<MovieType> = ({
 				>
 					<div className={styles.MovieMore}>
 						<div className={styles.MovieItem}>
-							<MovieBody width={150} height={200} />
+							<MovieBody
+								width={150}
+								height={200}
+								movieInfo={{ posterUrl, name, avgRate, publishedYear }}
+							/>
 						</div>
 
 						<div style={{ flex: '1', padding: '0 10px' }}>
@@ -113,7 +117,11 @@ const MovieCard: React.FC<MovieType> = ({
 					setVisible(true);
 				}}
 			>
-				<MovieBody width={210} height={280} />
+				<MovieBody
+					width={210}
+					height={280}
+					movieInfo={{ posterUrl, name, avgRate, publishedYear }}
+				/>
 				<MovieFooter introduction={introduction} />
 			</div>
 		</>
