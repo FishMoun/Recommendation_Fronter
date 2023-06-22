@@ -38,7 +38,9 @@ const MyLayout: React.FC = () => {
 						overflowY: 'scroll'
 					}}
 				>
-					<div style={{ padding: '0 40px' }}>{element}</div>
+					<div style={{ padding: '0 40px', height: 'calc(100vh - 65px)' }}>
+						{element}
+					</div>
 					<MyFooter />
 				</Content>
 			</Layout>

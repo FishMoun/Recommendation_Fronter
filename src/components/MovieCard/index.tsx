@@ -36,7 +36,14 @@ const MovieBody: React.FC<MovieProps> = ({ width, height }) => {
 					</div>
 					<div>2023-10-11</div>
 				</div>
-				<div className="right" style={{ fontSize: '20px' }}>
+				<div
+					className="right"
+					style={{
+						fontSize: '20px',
+						alignSelf: 'flex-start',
+						lineHeight: '35px'
+					}}
+				>
 					9.1分
 				</div>
 			</div>
@@ -49,8 +56,7 @@ const MovieFooter: React.FC<Pick<MovieType, 'introduction'>> = ({
 }) => {
 	return (
 		<div className={styles.Desc} style={{ color: 'grey' }}>
-			descbalabaladescbalabaladescbalabala descbalabala descbalabala
-			descbalabala descbalabala
+			{introduction}
 		</div>
 	);
 };

@@ -1,4 +1,4 @@
-// import request from './request';
+import request from './request';
 
 import { type } from 'os';
 
@@ -87,36 +87,36 @@ const users = [
 
 export const registerApi = (params: RegisterParams) => {
 	console.log(params);
-	return new Promise((resolve) => {
-		users.push({
-			userId: users.length + 1,
-			...params
-		});
-		resolve('注册成功！');
-	});
-	// return request.post('/api/register', {
-	// 	...params,
-	// 	likes: params.likes.join(','),
-	// 	occupation: params.occupation.join(',')
+	// return new Promise((resolve) => {
+	// 	users.push({
+	// 		userId: users.length + 1,
+	// 		...params
+	// 	});
+	// 	resolve('注册成功！');
 	// });
+	return request.post('/api/register', {
+		...params,
+		likes: params.likes.join(','),
+		occupation: params.occupation.join(',')
+	});
 };
 
 // 登陆
 export type LoginParams = Pick<RegisterParams, 'userName' | 'password'>;
 export const loginApi = (params: LoginParams) => {
-	console.log(params, users);
-	return new Promise((resolve, reject) => {
-		for (const item of users) {
-			if (
-				item.userName === params.userName &&
-				item.password === params.password
-			) {
-				resolve(item);
-			}
-		}
-		reject('账号或密码错误');
-	});
-	// return request.post('/api/login', params);
+	// console.log(params, users);
+	// return new Promise((resolve, reject) => {
+	// 	for (const item of users) {
+	// 		if (
+	// 			item.userName === params.userName &&
+	// 			item.password === params.password
+	// 		) {
+	// 			resolve(item);
+	// 		}
+	// 	}
+	// 	reject('账号或密码错误');
+	// });
+	return request.post('/api/login', params);
 };
 
 export type RateType = 1 | 2 | 3 | 4 | 5;

@@ -127,7 +127,7 @@ const Header: React.FC = () => {
 										console.log(res);
 									},
 									(err) => {
-										Message.error(err);
+										console.log(err);
 									}
 								);
 							},
@@ -185,7 +185,6 @@ const Header: React.FC = () => {
 									},
 									(err) => {
 										console.log(err);
-										Message.error(err);
 									}
 								);
 							},

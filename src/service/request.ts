@@ -1,3 +1,4 @@
+import { Message } from '@arco-design/web-react';
 import axios, {
 	AxiosInstance,
 	InternalAxiosRequestConfig,
@@ -17,6 +18,10 @@ const axiosInstance: AxiosInstance = axios.create({
 axiosInstance.interceptors.response.use(
 	(response: AxiosResponse) => {
 		if (response.status === 200) {
+			if (response.data.code !== 200) {
+				Message.error(response.data.message);
+				return Promise.reject(response.data);
+			}
 			return response.data;
 		} else {
 			return response.data;
