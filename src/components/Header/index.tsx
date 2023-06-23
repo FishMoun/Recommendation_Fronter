@@ -40,6 +40,7 @@ const Header: React.FC = () => {
 	const FormItem = Form.Item;
 	const { isLogin, userInfo } = useAppSelector((store) => store.userInfo);
 	const dispatch = useAppDispatch();
+	const [modalLoading, setModalLoading] = useState<boolean>(false);
 
 	return (
 		<div>
@@ -115,6 +116,7 @@ const Header: React.FC = () => {
 			{loginVisible && (
 				<Modal
 					title="欢迎登陆"
+					confirmLoading={modalLoading}
 					visible={true}
 					onCancel={() => {
 						setLoginVisible(false);
@@ -122,23 +124,31 @@ const Header: React.FC = () => {
 					onOk={() => {
 						form.validate().then(
 							() => {
-								loginApi(form.getFieldsValue() as LoginParams).then(
-									(res) => {
-										Message.success('登陆成功！');
-										form.clearFields();
-										setLoginVisible(false);
-										dispatch(
-											loginAction(res.data as Partial<RegisterFormParams>)
-										);
-										dispatch(setPendingAction(true));
-										dispatch(
-											fetchRatedMoviesDataAction({ userId: res.data.userId })
-										);
-									},
-									(err) => {
-										Message.error(err.error);
-									}
-								);
+								setModalLoading(true);
+								loginApi(form.getFieldsValue() as LoginParams)
+									.then(
+										(res) => {
+											if (!res || !res.data) {
+												return;
+											}
+											Message.success('登陆成功！');
+											form.clearFields();
+											setLoginVisible(false);
+											dispatch(
+												loginAction(res.data as Partial<RegisterFormParams>)
+											);
+											dispatch(setPendingAction(true));
+											dispatch(
+												fetchRatedMoviesDataAction({ userId: res.data.userId })
+											);
+										},
+										(err) => {
+											Message.error(err.error);
+										}
+									)
+									.finally(() => {
+										setModalLoading(false);
+									});
 							},
 							(err) => {
 								Message.error(err);
@@ -167,6 +177,7 @@ const Header: React.FC = () => {
 			{registerVisible && (
 				<Modal
 					title="欢迎注册"
+					confirmLoading={modalLoading}
 					visible={true}
 					onCancel={() => {
 						setRegisterVisible(false);
@@ -184,18 +195,23 @@ const Header: React.FC = () => {
 								const params = form1.getFieldsValue();
 								delete params.password1;
 								params.age = Number(params.age);
-								registerApi(params as RegisterParams).then(
-									(res) => {
-										Message.success('注册成功，请登陆！');
-										form1.clearFields();
-										setRegisterVisible(false);
-										setLoginVisible(true);
-										console.log(res);
-									},
-									(err) => {
-										console.log(err);
-									}
-								);
+								setModalLoading(true);
+								registerApi(params as RegisterParams)
+									.then(
+										(res) => {
+											Message.success('注册成功，请登陆！');
+											form1.clearFields();
+											setRegisterVisible(false);
+											setLoginVisible(true);
+											console.log(res);
+										},
+										(err) => {
+											console.log(err);
+										}
+									)
+									.finally(() => {
+										setModalLoading(false);
+									});
 							},
 							() => {
 								Message.error('表单校验失败！');

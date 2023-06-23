@@ -27,8 +27,8 @@ const MovieList: React.FC<MovieListProps> = ({ title, isLoading, movies }) => {
 			) : (
 				<div className={styles.imageContainer}>
 					{movies?.map((item) => (
-						<div className={styles.imageItem}>
-							<MovieCard {...item} key={item.id} />
+						<div className={styles.imageItem} key={item.id}>
+							<MovieCard {...item} />
 						</div>
 					))}
 				</div>

@@ -17,17 +17,13 @@ export const userSlice = createSlice({
 	initialState,
 	reducers: {
 		loginAction: (state, userInfo: { payload: UserInfoType }) => {
-			console.log(userInfo.payload);
+			console.log(userInfo);
 			state.isLogin = true;
 			state.userInfo = userInfo.payload;
-		},
-		logoutAction: (state) => {
-			state = initialState;
-			console.log(state);
 		}
 	}
 });
 
-export const { loginAction, logoutAction } = userSlice.actions;
+export const { loginAction } = userSlice.actions;
 
 export default userSlice.reducer;
