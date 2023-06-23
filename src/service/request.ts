@@ -4,10 +4,11 @@ import axios, {
 	InternalAxiosRequestConfig,
 	AxiosResponse
 } from 'axios';
+import { BASE_URL } from '../assets/const';
 // import qs from 'qs';
 
 const axiosInstance: AxiosInstance = axios.create({
-	// baseURL: BASE_URL,
+	baseURL: BASE_URL,
 	timeout: 10000,
 	headers: {
 		'content-type': 'application/json;charset=UTF-8'
