@@ -16,7 +16,10 @@ const MovieBody: React.FC<MovieProps> = ({ width, height, movieInfo }) => {
 	const { posterUrl, name, publishedYear, avgRate } = movieInfo;
 	return (
 		<>
-			<Image preview={false} width={width} height={height} src={posterUrl} />
+			<div style={{ position: 'relative' }}>
+				<Image preview={false} width={width} height={height} src={posterUrl} />
+			</div>
+
 			<div
 				style={{
 					display: 'flex',

@@ -14,6 +14,16 @@ const axiosInstance: AxiosInstance = axios.create({
 	}
 });
 
+// axios实例拦截请求
+axiosInstance.interceptors.request.use(
+	(config: InternalAxiosRequestConfig) => {
+		return config;
+	},
+	(error: any) => {
+		return Promise.reject(error);
+	}
+);
+
 // axios实例拦截响应
 axiosInstance.interceptors.response.use(
 	(response: AxiosResponse) => {
@@ -36,16 +46,6 @@ axiosInstance.interceptors.response.use(
 		} else {
 			console.error('网络连接异常,请稍后再试!');
 		}
-	}
-);
-
-// axios实例拦截请求
-axiosInstance.interceptors.request.use(
-	(config: InternalAxiosRequestConfig) => {
-		return config;
-	},
-	(error: any) => {
-		return Promise.reject(error);
 	}
 );
 

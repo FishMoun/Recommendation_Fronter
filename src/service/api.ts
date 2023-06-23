@@ -121,7 +121,7 @@ export const loginApi = (params: LoginParams) => {
 
 export type RateType = 1 | 2 | 3 | 4 | 5;
 export interface MovieType {
-	movieId: number;
+	id: number;
 	name: string;
 	posterUrl: string;
 	type: string;
@@ -130,10 +130,16 @@ export interface MovieType {
 	avgRate: RateType;
 }
 
+export interface MovieRes {
+	code: number;
+	data: MovieType[];
+	message: string;
+}
+
 // movie mock
 export const MOVIE_LIST: MovieType[] = [
 	{
-		movieId: 0,
+		id: 0,
 		name: '小王子',
 		posterUrl: 'https://pic.616pic.com/bg_w1180/00/01/95/eDWwD17BPr.jpg',
 		type: UserLikes.ScienceFiction,
@@ -145,9 +151,10 @@ export const MOVIE_LIST: MovieType[] = [
 
 // 热门电影
 export const getHotMoviesApi = () => {
-	return new Promise<MovieType[]>((resolve) => {
-		resolve(MOVIE_LIST);
-	});
+	// return new Promise<MovieType[]>((resolve) => {
+	// 	resolve(MOVIE_LIST);
+	// });
+	return request.get<any, MovieRes>('/api/highscore');
 };
 
 // 猜你喜欢
