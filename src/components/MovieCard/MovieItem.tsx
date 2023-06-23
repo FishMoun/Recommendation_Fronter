@@ -65,12 +65,7 @@ const MovieItem: React.FC<MovieItemProps> = ({
 						styles.Desc + ` ${introPosition === 'right' && styles.RBox}`
 					}
 				>
-					{introduction +
-						introduction +
-						introduction +
-						introduction +
-						introduction +
-						introduction || '暂无描述'}
+					{introduction || '暂无描述'}
 				</div>
 			)}
 		</div>
