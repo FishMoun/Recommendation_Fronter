@@ -1,8 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { RegisterParams } from '../../service/api';
 
+export type UserInfoType = Partial<RegisterParams & { userId: number }>;
 interface UserItem {
-	userInfo: Partial<RegisterParams>;
+	userInfo: UserInfoType;
 	isLogin: boolean;
 }
 
@@ -15,7 +16,7 @@ export const userSlice = createSlice({
 	name: 'couter',
 	initialState,
 	reducers: {
-		loginAction: (state, userInfo: { payload: Partial<RegisterParams> }) => {
+		loginAction: (state, userInfo: { payload: UserInfoType }) => {
 			console.log(userInfo.payload);
 			state.isLogin = true;
 			state.userInfo = userInfo.payload;

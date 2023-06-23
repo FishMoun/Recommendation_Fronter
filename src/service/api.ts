@@ -1,4 +1,5 @@
 import request from './request';
+import qs from 'qs';
 
 import { type } from 'os';
 
@@ -158,9 +159,16 @@ export const getHotMoviesApi = () => {
 };
 
 // 猜你喜欢
-export const getLikeMoviesApi = () => {
-	return new Promise<MovieType[]>((resolve) => {
-		resolve(MOVIE_LIST);
+export const getLikeMoviesApi = (params: { userId: number }) => {
+	// return new Promise<MovieType[]>((resolve) => {
+	// 	resolve(MOVIE_LIST);
+	// });
+	return request({
+		method: 'post',
+		url: `/api/recommend/${params.userId}`
+		// headers: {
+		// 	'Content-Type': 'application/x-www-form-urlencode'
+		// }
 	});
 };
 

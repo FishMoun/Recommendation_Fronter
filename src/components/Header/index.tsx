@@ -123,7 +123,9 @@ const Header: React.FC = () => {
 										Message.success('登陆成功！');
 										form.clearFields();
 										setLoginVisible(false);
-										dispatch(loginAction(res as Partial<RegisterFormParams>));
+										dispatch(
+											loginAction(res.data as Partial<RegisterFormParams>)
+										);
 										console.log(res);
 									},
 									(err) => {

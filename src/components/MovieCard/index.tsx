@@ -1,68 +1,9 @@
 import React, { useState } from 'react';
-import { Image, Modal, Rate } from '@arco-design/web-react';
+import { Image, Modal, Rate, Spin } from '@arco-design/web-react';
 import styles from './index.module.scss';
 import { MovieType } from '../../service/api';
-
-interface MovieProps {
-	movieInfo: Pick<
-		MovieType,
-		'posterUrl' | 'name' | 'publishedYear' | 'avgRate'
-	>;
-	width: number;
-	height: number;
-}
-
-const MovieBody: React.FC<MovieProps> = ({ width, height, movieInfo }) => {
-	const { posterUrl, name, publishedYear, avgRate } = movieInfo;
-	return (
-		<>
-			<div style={{ position: 'relative' }}>
-				<Image preview={false} width={width} height={height} src={posterUrl} />
-			</div>
-
-			<div
-				style={{
-					display: 'flex',
-					justifyContent: 'space-between',
-					alignItems: 'center'
-				}}
-			>
-				<div className="left">
-					<div
-						style={{
-							fontSize: '16px',
-							fontWeight: '600',
-							lineHeight: '35px'
-						}}
-					>
-						{name}
-					</div>
-					<div>{publishedYear}</div>
-				</div>
-				<div
-					className="right"
-					style={{
-						fontSize: '20px',
-						alignSelf: 'flex-start',
-						lineHeight: '35px'
-					}}
-				>
-					{avgRate.toFixed(1)}分
-				</div>
-			</div>
-		</>
-	);
-};
-
-const MovieFooter: React.FC<Pick<MovieType, 'introduction'>> = ({
-	introduction
-}) => {
-	return (
-		<div className={styles.Desc} style={{ color: 'grey' }}>
-			{introduction}
-		</div>
-	);
-};
+import { genEllipsis } from '../../assets/genEllipsis';
+import MovieItem from './MovieItem';
 
 const MovieCard: React.FC<MovieType> = ({
 	posterUrl,
@@ -82,6 +23,7 @@ const MovieCard: React.FC<MovieType> = ({
 					onCancel={() => {
 						setVisible(false);
 					}}
+					style={{ width: 800, height: 'fit-content' }}
 					footer={() => {
 						return (
 							<div>
@@ -99,33 +41,28 @@ const MovieCard: React.FC<MovieType> = ({
 						);
 					}}
 				>
-					<div className={styles.MovieMore}>
-						<div className={styles.MovieItem}>
-							<MovieBody
-								width={150}
-								height={200}
-								movieInfo={{ posterUrl, name, avgRate, publishedYear }}
-							/>
-						</div>
-
-						<div style={{ flex: '1', padding: '0 10px' }}>
-							<MovieFooter introduction={introduction} />
-						</div>
-					</div>
+					<MovieItem
+						name={name}
+						posterUrl={posterUrl}
+						avgRate={avgRate}
+						publishedYear={publishedYear}
+						introduction={introduction}
+						introPosition="right"
+					/>
 				</Modal>
 			)}
 			<div
-				className={styles.MovieItem}
 				onClick={() => {
 					setVisible(true);
 				}}
 			>
-				<MovieBody
-					width={210}
-					height={280}
-					movieInfo={{ posterUrl, name, avgRate, publishedYear }}
+				<MovieItem
+					name={name}
+					posterUrl={posterUrl}
+					avgRate={avgRate}
+					publishedYear={publishedYear}
+					introduction={introduction}
 				/>
-				<MovieFooter introduction={introduction} />
 			</div>
 		</>
 	);
