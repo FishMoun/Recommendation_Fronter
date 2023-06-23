@@ -2,6 +2,7 @@ import React from 'react';
 import { Image, Spin } from '@arco-design/web-react';
 import styles from './index.module.scss';
 import { genEllipsis } from '../../assets/genEllipsis';
+import { BASE_URL } from '../../assets/const';
 
 export interface MovieItemProps {
 	posterUrl: string;
@@ -40,7 +41,7 @@ const MovieItem: React.FC<MovieItemProps> = ({
 						}
 						width={'100%'}
 						height={'100%'}
-						src={posterUrl}
+						src={BASE_URL + posterUrl}
 					/>
 				</div>
 				<div className={styles.Content}>

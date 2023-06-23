@@ -31,6 +31,11 @@ const MovieList: React.FC<MovieListProps> = ({ title, isLoading, movies }) => {
 							<MovieCard {...item} />
 						</div>
 					))}
+					{movies?.map((item) => (
+						<div className={styles.imageItem} key={item.id}>
+							<MovieCard {...item} />
+						</div>
+					))}
 				</div>
 			)}
 		</>
