@@ -1,7 +1,4 @@
 import request from './request';
-import qs from 'qs';
-
-import { type } from 'os';
 
 // 注册
 export enum UserSex {
@@ -74,17 +71,17 @@ export const LIKE_LIST: UserLikes[] = [
 ];
 
 // userMock
-const users = [
-	{
-		userId: 0,
-		age: 1,
-		gender: UserSex.Female,
-		likes: [UserLikes.Comedy],
-		occupation: [UserOccupation.Education],
-		password: 'Admin',
-		userName: 'Admin'
-	}
-];
+// const users = [
+// 	{
+// 		userId: 0,
+// 		age: 1,
+// 		gender: UserSex.Female,
+// 		likes: [UserLikes.Comedy],
+// 		occupation: [UserOccupation.Education],
+// 		password: 'Admin',
+// 		userName: 'Admin'
+// 	}
+// ];
 
 export const registerApi = (params: RegisterParams) => {
 	console.log(params);
@@ -137,6 +134,10 @@ export interface MovieRes {
 	message: string;
 }
 
+export interface RateRes extends MovieRes {
+	data: (MovieType & { curRate: number })[];
+}
+
 // movie mock
 export const MOVIE_LIST: MovieType[] = [
 	{
@@ -163,7 +164,7 @@ export const getLikeMoviesApi = (params: { userId: number }) => {
 	// return new Promise<MovieType[]>((resolve) => {
 	// 	resolve(MOVIE_LIST);
 	// });
-	return request({
+	return request<any, MovieRes>({
 		method: 'post',
 		url: `/api/recommend/${params.userId}`
 		// headers: {
@@ -173,9 +174,16 @@ export const getLikeMoviesApi = (params: { userId: number }) => {
 };
 
 // 最近浏览
-export const getRecentMoviesApi = () => {
-	return new Promise<MovieType[]>((resolve) => {
-		resolve(MOVIE_LIST);
+export const getRecentMoviesApi = (params: { userId: number }) => {
+	// return new Promise<MovieType[]>((resolve) => {
+	// 	resolve(MOVIE_LIST);
+	// });
+	return request<any, RateRes>({
+		method: 'post',
+		url: `/api/ratedmovie/${params.userId}`
+		// headers: {
+		// 	'Content-Type': 'application/x-www-form-urlencode'
+		// }
 	});
 };
 
@@ -186,18 +194,9 @@ export interface RateParams {
 	userId: number;
 }
 export const rateMovieApi = (params: RateParams) => {
-	console.log(params);
-	return new Promise((resolve) => {
-		resolve('评分成功');
-	});
-};
-
-// 根据用户ID、电影ID获取用户评分
-export const getMovieRate = (
-	params: Pick<RateParams, 'movieId' | 'userId'>
-) => {
-	console.log(params);
-	return new Promise((resolve) => {
-		resolve(1);
-	});
+	// console.log(params);
+	// return new Promise((resolve) => {
+	// 	resolve('评分成功');
+	// });
+	return request.post('/api/rate', params);
 };

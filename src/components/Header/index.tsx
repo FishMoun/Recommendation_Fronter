@@ -11,6 +11,10 @@ import {
 	Message
 } from '@arco-design/web-react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import {
+	setPendingAction,
+	fetchRatedMoviesDataAction
+} from '../../store/features/ratedMoviesSlice';
 import { loginAction } from '../../store/features/userSlice';
 import {
 	loginApi,
@@ -126,10 +130,13 @@ const Header: React.FC = () => {
 										dispatch(
 											loginAction(res.data as Partial<RegisterFormParams>)
 										);
-										console.log(res);
+										dispatch(setPendingAction(true));
+										dispatch(
+											fetchRatedMoviesDataAction({ userId: res.data.userId })
+										);
 									},
 									(err) => {
-										console.log(err);
+										Message.error(err.error);
 									}
 								);
 							},

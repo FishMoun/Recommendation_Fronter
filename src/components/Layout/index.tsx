@@ -7,7 +7,6 @@ import routes from '../../routes';
 // import styles from './index.module.scss';
 
 const Header = Layout.Header;
-const Footer = Layout.Footer;
 const Content = Layout.Content;
 const MyLayout: React.FC = () => {
 	const element = useRoutes(routes);
@@ -38,7 +37,12 @@ const MyLayout: React.FC = () => {
 						overflowY: 'scroll'
 					}}
 				>
-					<div style={{ padding: '0 40px', minHeight: 'calc(100vh - 65px)' }}>
+					<div
+						style={{
+							padding: '0 40px 40px 40px',
+							minHeight: 'calc(100vh - 65px)'
+						}}
+					>
 						{element}
 					</div>
 					<MyFooter />
