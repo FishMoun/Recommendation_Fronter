@@ -1,89 +1,100 @@
-import React, { useRef, useState } from 'react';
-import { Image, Modal, Rate } from '@arco-design/web-react';
-import styles from './index.module.scss';
+import React, { useState } from 'react';
+import { Message, Modal, Rate } from '@arco-design/web-react';
+import { MovieType, RateType } from '../../service/api';
+import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import MovieItem from './MovieItem';
+import { rateMovieApi } from '../../service/api';
+import { fetchRatedMoviesDataAction } from '../../store/features/ratedMoviesSlice';
 
-const MovieCard: React.FC = () => {
+const MovieCard: React.FC<MovieType> = ({
+	id,
+	posterUrl,
+	name,
+	publishedYear,
+	introduction,
+	avgRate
+}) => {
 	const [visible, setVisible] = useState(false);
-	const genModal = () => {
-		return (
-			<Modal
-				title="小王子"
-				visible={visible}
-				onCancel={() => {
+	const { isLogin, userInfo, ratedList } = useAppSelector((store) => {
+		return { ...store.userInfo, ...store.ratedMovies };
+	});
+	const dispatch = useAppDispatch();
+	let curRate = 0;
+
+	for (const item of ratedList) {
+		if (item.id === id) {
+			curRate = item.curRate;
+			break;
+		}
+	}
+
+	const handleRate = (value: number) => {
+		if (value !== curRate && userInfo.userId) {
+			rateMovieApi({
+				userId: userInfo.userId,
+				movieId: id,
+				rating: value as RateType
+			})
+				.then(() => {
+					Message.info('评分成功！');
+					userInfo.userId &&
+						dispatch(fetchRatedMoviesDataAction({ userId: userInfo.userId }));
 					setVisible(false);
-				}}
-				footer={() => {
-					return (
-						<div>
-							<div className="flexCenter" style={{ justifyContent: 'end' }}>
-								<div style={{ padding: '3px 8px' }}>我的评分</div>
-								<Rate
-									allowHalf
-									defaultValue={4.5}
-									onChange={(value) => {
-										console.log(value);
-										setVisible(false);
-									}}
-								/>
-							</div>
-						</div>
-					);
-				}}
-			>
-				<div className={styles.MovieMore}>
-					<div className={styles.MovieItem}>
-						<Image
-							preview={false}
-							width={150}
-							height={200}
-							src="https://pic.616pic.com/bg_w1180/00/01/95/eDWwD17BPr.jpg"
-						/>
-						<div
-							style={{
-								fontSize: '14px',
-								fontWeight: '600',
-								lineHeight: '30px'
-							}}
-						>
-							小王子
-						</div>
-						<div>2023-10-11</div>
-					</div>
-					<div style={{ flex: '1', padding: '0 10px' }}>
-						<div className={styles.Desc} style={{ color: 'grey' }}>
-							descbalabaladescbalabaladescbalabala descbalabala descbalabala
-							descbalabala descbalabala
-						</div>
-					</div>
-				</div>
-			</Modal>
-		);
+				})
+				.catch((err) => {
+					Message.error('评分失败，请重试！err：' + err.error);
+				});
+		}
 	};
+
 	return (
 		<>
-			{genModal()}
+			{visible && (
+				<Modal
+					title={name}
+					visible={true}
+					onCancel={() => {
+						setVisible(false);
+					}}
+					style={{ width: 800, height: 'fit-content' }}
+					footer={() => {
+						return (
+							<div className="flexCenter" style={{ justifyContent: 'end' }}>
+								<div style={{ padding: '3px 8px' }}>我的评分</div>
+								{isLogin ? (
+									<Rate
+										defaultValue={curRate}
+										onChange={(value) => handleRate(value)}
+									/>
+								) : (
+									<span style={{ color: 'red' }}>请登陆后进行评分</span>
+								)}
+							</div>
+						);
+					}}
+				>
+					<MovieItem
+						name={name}
+						posterUrl={posterUrl}
+						avgRate={avgRate}
+						publishedYear={publishedYear}
+						introduction={introduction}
+						introPosition="right"
+					/>
+				</Modal>
+			)}
 			<div
-				className={styles.MovieItem}
-				onClick={(e) => {
+				onClick={() => {
 					setVisible(true);
 				}}
 			>
-				<Image
-					preview={false}
-					width={210}
-					height={280}
-					src="https://pic.616pic.com/bg_w1180/00/01/95/eDWwD17BPr.jpg"
+				<MovieItem
+					name={name}
+					posterUrl={posterUrl}
+					avgRate={avgRate}
+					publishedYear={publishedYear}
+					introduction={introduction}
 				/>
-				<div
-					style={{ fontSize: '16px', fontWeight: '600', lineHeight: '35px' }}
-				>
-					小王子
-				</div>
-				<div>2023-10-11</div>
-				<div className={styles.Desc} style={{ color: 'grey' }}>
-					descbalabaladescbalabaladescbalabala descbalabala descbalabala
-					descbalabala descbalabala
-				</div>
 			</div>
 		</>
 	);

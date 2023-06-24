@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
-import counterSlice from './features/counterSlice';
 import userSlice from './features/userSlice';
+import ratedMoviesSlice from './features/ratedMoviesSlice';
 
 const store = configureStore({
 	// 合并reducer
 	reducer: {
-		counter: counterSlice,
-		userInfo: userSlice
+		userInfo: userSlice,
+		ratedMovies: ratedMoviesSlice
 	}
 });
 

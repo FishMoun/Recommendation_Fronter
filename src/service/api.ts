@@ -1,74 +1,202 @@
-import { type } from 'os';
-import axiosInstance from './request';
+import request from './request';
+
+// 注册
+export enum UserSex {
+	Male = '男',
+	Female = '女',
+	Unkown = '保密'
+}
+export enum UserLikes {
+	Comedy = '喜剧',
+	ScienceFiction = '科幻'
+}
+export enum UserOccupation {
+	Education = '教育',
+	Artist = '艺术家',
+	Administration = '行政',
+	SchoolStudent = '中小学生',
+	CollegeStudent = '大学生',
+	CustomerService = '客户服务',
+	Medical = '医疗',
+	Management = '管理',
+	Farmer = '农民',
+	Housewife = '家庭主妇',
+	Lawyer = '律师',
+	Programmer = '程序员',
+	Retirement = '退休',
+	Marketing = '市场营销',
+	Scientist = '科学家',
+	SelfEmployed = '个体户',
+	Engineer = '工程师',
+	Craftsman = '工匠',
+	Writer = '作家',
+	Unemployed = '失业',
+	Others = '其它'
+}
+export interface RegisterParams {
+	age: number;
+	gender: UserSex;
+	likes: UserLikes[];
+	occupation: UserOccupation[];
+	password: string;
+	// userId: string;
+	userName: string;
+}
+export const JOB_LIST: UserOccupation[] = [
+	UserOccupation.Education,
+	UserOccupation.Artist,
+	UserOccupation.Administration,
+	UserOccupation.SchoolStudent,
+	UserOccupation.CollegeStudent,
+	UserOccupation.CustomerService,
+	UserOccupation.Medical,
+	UserOccupation.Management,
+	UserOccupation.Farmer,
+	UserOccupation.Housewife,
+	UserOccupation.Lawyer,
+	UserOccupation.Programmer,
+	UserOccupation.Retirement,
+	UserOccupation.Marketing,
+	UserOccupation.Scientist,
+	UserOccupation.SelfEmployed,
+	UserOccupation.Engineer,
+	UserOccupation.Craftsman,
+	UserOccupation.Writer,
+	UserOccupation.Unemployed,
+	UserOccupation.Others
+];
+export const LIKE_LIST: UserLikes[] = [
+	UserLikes.Comedy,
+	UserLikes.ScienceFiction
+];
+
+// userMock
+// const users = [
+// 	{
+// 		userId: 0,
+// 		age: 1,
+// 		gender: UserSex.Female,
+// 		likes: [UserLikes.Comedy],
+// 		occupation: [UserOccupation.Education],
+// 		password: 'Admin',
+// 		userName: 'Admin'
+// 	}
+// ];
+
+export const registerApi = (params: RegisterParams) => {
+	console.log(params);
+	// return new Promise((resolve) => {
+	// 	users.push({
+	// 		userId: users.length + 1,
+	// 		...params
+	// 	});
+	// 	resolve('注册成功！');
+	// });
+	return request.post('/api/register', {
+		...params,
+		likes: params.likes.join(','),
+		occupation: params.occupation.join(',')
+	});
+};
 
 // 登陆
-export interface LoginParams {
-	name: string;
-	password: string;
-}
+export type LoginParams = Pick<RegisterParams, 'userName' | 'password'>;
 export const loginApi = (params: LoginParams) => {
-	return new Promise((resolve) => {
-		resolve('登陆成功！');
-	});
+	// console.log(params, users);
+	// return new Promise((resolve, reject) => {
+	// 	for (const item of users) {
+	// 		if (
+	// 			item.userName === params.userName &&
+	// 			item.password === params.password
+	// 		) {
+	// 			resolve(item);
+	// 		}
+	// 	}
+	// 	reject('账号或密码错误');
+	// });
+	return request.post('/api/login', params);
 };
 
-// 获取用户基本信息
-export interface userInfo {
+export type RateType = 1 | 2 | 3 | 4 | 5;
+export interface MovieType {
+	id: number;
 	name: string;
-	sex: '男' | '女' | '保密';
-	birthday: string;
-	like: string[]; //用户喜欢的电影类型
+	posterUrl: string;
+	type: string;
+	publishedYear: string;
+	introduction: string;
+	avgRate: RateType;
 }
-export const getUserInfoApi = () => {
-	return new Promise((resolve) => {
-		resolve('获取用户信息成功！');
+
+export interface MovieRes {
+	code: number;
+	data: MovieType[];
+	message: string;
+}
+
+export interface RateRes extends MovieRes {
+	data: (MovieType & { curRate: number })[];
+}
+
+// movie mock
+export const MOVIE_LIST: MovieType[] = [
+	{
+		id: 0,
+		name: '小王子',
+		posterUrl: 'https://pic.616pic.com/bg_w1180/00/01/95/eDWwD17BPr.jpg',
+		type: UserLikes.ScienceFiction,
+		publishedYear: '1998',
+		introduction: 'xx',
+		avgRate: 5
+	}
+];
+
+// 热门电影
+export const getHotMoviesApi = () => {
+	// return new Promise<MovieType[]>((resolve) => {
+	// 	resolve(MOVIE_LIST);
+	// });
+	return request.get<any, MovieRes>('/api/highscore');
+};
+
+// 猜你喜欢
+export const getLikeMoviesApi = (params: { userId: number }) => {
+	// return new Promise<MovieType[]>((resolve) => {
+	// 	resolve(MOVIE_LIST);
+	// });
+	return request<any, MovieRes>({
+		method: 'post',
+		url: `/api/recommend/${params.userId}`
+		// headers: {
+		// 	'Content-Type': 'application/x-www-form-urlencode'
+		// }
 	});
 };
 
-// 更新用户基本信息
-export interface setUserIndfoParams {
-	name?: string;
-	sex?: '男' | '女' | '保密';
-	birthday?: string;
-	like?: string[]; //用户喜欢的电影类型
-}
-export const setUserInfoApi = (params: setUserIndfoParams) => {
-	return new Promise((resolve) => {
-		resolve('更新用户信息成功！');
+// 最近浏览
+export const getRecentMoviesApi = (params: { userId: number }) => {
+	// return new Promise<MovieType[]>((resolve) => {
+	// 	resolve(MOVIE_LIST);
+	// });
+	return request<any, RateRes>({
+		method: 'post',
+		url: `/api/ratedmovie/${params.userId}`
+		// headers: {
+		// 	'Content-Type': 'application/x-www-form-urlencode'
+		// }
 	});
 };
 
-// 获取所有的电影类型
-export interface movieItem {
-	title: string;
-	class: string[];
-	desc: string;
-	star: number;
-	userStar: number;
+// 评分
+export interface RateParams {
+	movieId: number;
+	rating: RateType;
+	userId: number;
 }
-export const getMovieClassesApi = () => {
-	return new Promise((resolve) => {
-		resolve('获取信息成功！');
-	});
-};
-
-// 获取推荐列表
-export interface GetRcmdMovieParams {
-	id: string | number;
-}
-export const getRcmdMovieListApi = (params: GetRcmdMovieParams) => {
-	return new Promise((resolve) => {
-		resolve('获取信息成功！');
-	});
-};
-
-//用户点赞
-export interface StarMovieParams {
-	movieId: string | number;
-	score: number;
-}
-export const starMovieApi = (params: StarMovieParams) => {
-	return new Promise((resolve) => {
-		resolve('点赞成功！');
-	});
+export const rateMovieApi = (params: RateParams) => {
+	// console.log(params);
+	// return new Promise((resolve) => {
+	// 	resolve('评分成功');
+	// });
+	return request.post('/api/rate', params);
 };

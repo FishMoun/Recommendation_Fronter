@@ -4,10 +4,9 @@ import MyFooter from '../Footer';
 import { Layout } from '@arco-design/web-react';
 import { useRoutes } from 'react-router-dom';
 import routes from '../../routes';
-import styles from './index.module.scss';
+// import styles from './index.module.scss';
 
 const Header = Layout.Header;
-const Footer = Layout.Footer;
 const Content = Layout.Content;
 const MyLayout: React.FC = () => {
 	const element = useRoutes(routes);
@@ -15,7 +14,7 @@ const MyLayout: React.FC = () => {
 		<div>
 			<Layout
 				style={{
-					height: 'calc(100vh + 200px)',
+					height: 'calc(100vh)',
 					overflow: 'hidden',
 					position: 'relative'
 				}}
@@ -33,16 +32,21 @@ const MyLayout: React.FC = () => {
 				</Header>
 				<Content
 					style={{
-						minHeight: 'calc(100vh - 65px)',
+						height: 'calc(100vh - 65px)',
 						marginTop: '65px',
-						padding: '0 40px'
+						overflowY: 'scroll'
 					}}
 				>
-					<div>{element}</div>
-				</Content>
-				<Footer>
+					<div
+						style={{
+							padding: '0 40px 40px 40px',
+							minHeight: 'calc(100vh - 65px)'
+						}}
+					>
+						{element}
+					</div>
 					<MyFooter />
-				</Footer>
+				</Content>
 			</Layout>
 		</div>
 	);
